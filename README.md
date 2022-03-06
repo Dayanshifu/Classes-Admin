@@ -4,7 +4,7 @@
 
 1. 解压文件（带着文件的文件夹一起）
 
-2. [[配置Python环境](http://littleyan.cnya.top/tools/baidu/index.html?配置python环境)]
+2. [配置Python环境](http://littleyan.cnya.top/tools/baidu/index.html?配置python环境)
 
 3. 右击文件夹背景打开windows powershell（有的是windows终端或windows terminal）
 
