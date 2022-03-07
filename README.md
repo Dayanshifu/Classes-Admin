@@ -28,8 +28,6 @@
 
 ## 关于
 
-版本beta0.5
-
 ### 作者
 
 ![me](https://gitee.com/Dayanshifu/imagebed/raw/master/img/头像.jpg)
