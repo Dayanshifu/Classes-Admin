@@ -1,154 +1,185 @@
 import os
-import easygui as box
 import random as ran
+import re
+
+try:
+    import easygui as box
+except ImportError:
+    print("GUI库导入失败，将使用命令行模式")
+
+windowTitle = "little颜の班级管理系统 Powered by Python310"
+databaseFile = "database.txt"
+admin = ""
+
+def quitIfNone(value):
+    if value is None:
+        quit()
+    return value
 
 
-if 'database.txt' not in os.listdir():#检测数据库是否存在
-    op = box.ynbox('系统检测到你的文件目录没有 database.txt 文件，是否自动创建？', title='little颜の班级管理系统 Powered by Python310')
-    if op == True:
-        f = open('database.txt', 'w')
-        res = f.write('{}')
-        f.close()
-        box.msgbox('创建成功！请重新运行本程序', title='little颜の班级管理系统 Powered by Python310')
-        quit()
-    else:
-        box.msgbox('请自行在当前程序所在目录创建database.txt文件，输入一对英文{}并保存', title='little颜の班级管理系统 Powered by Python310')
-        quit()
-else:#检测数据库格式并读取
-    f = open('database.txt', 'r')
+def interactyn(msg, choices = ("确定", "取消")):
+    try:
+        return quitIfNone(box.ynbox(msg, choices = choices, title=windowTitle))
+    except Exception:
+        reply = input(msg + "(y/n)")
+        return reply == "" or reply.lower() == "y" or reply.lower() == "yes"
+
+def interactmsg(msg, ok_button = "确定"):
+    try:
+        quitIfNone(box.msgbox(msg, ok_button = ok_button, title=windowTitle))
+    except Exception:
+        input(str(msg) + "，按下回车键" + ok_button)
+        
+def interactenter(msg):
+    try:
+        return box.enterbox(msg, title=windowTitle)
+    except Exception:
+        return input(msg + "：")
+
+def interactbutton(msg, choices):
+    try:
+        return quitIfNone(box.buttonbox(msg, choices = choices, title=windowTitle))
+    except Exception:
+        for i in range(len(choices)):
+            print(str(i) + ". " + choices[i])
+        while True:
+            reply = input("请输入你的选择：")
+            try:
+                return choices[int(reply)]
+            except Exception:
+                pass
+
+noDatabase = lambda :"database.txt" not in os.listdir()
+
+def writeDatabase(res):
+    res["admin"] = admin
+    f = open(databaseFile, "w")
+    f.write(str(res))
+    f.close()
+    res.pop("admin")
+
+def readDatabase():
+    f = open(databaseFile, "r")
     res = f.read()
     f.close()
-    if res == '':
-        f = open('database.txt', 'w')
-        res = f.write('{}')
+    return res
+
+if noDatabase():#检测数据库是否存在
+    op = interactyn("系统检测到你的文件目录没有数据库文件（database.txt），是否创建？")
+    if op == True:
+        f = open(databaseFile, "w")
+        f.write("{}")
         f.close()
-        f = open('database.txt', 'r')
-        res = eval(f.read())
-        f.close()
+        interactmsg("创建成功！")
     else:
-        f = open('database.txt', 'r')
-        res = eval(f.read())
-        f.close()
+        #interactmsg("请自行在当前程序所在目录创建database.txt文件)
+        quit()
+        """
+            程序的存在就是为了帮助人执行一些可以自动处理的内容
+        """
 
-if 'admin' not in res:#设置admin密码并加密
-    ans = box.enterbox('你还没有管理员账号，请输入将要使用的密码', title='little颜の班级管理系统 Powered by Python310')
-    code = []
-    for w in str(ans):
-        num = ord(w)
-        code.append(num)
-    res['admin'] = code
-    f = open('database.txt', 'w')
-    res = f.write(str(res))
-    f.close()
-    f = open('database.txt', 'r')
-    res = eval(f.read())
-    f.close()
-    code = res['admin']
-    key = ''
-    for w in code:
-        key = key + str(chr(w))
-    box.msgbox('请保管好你的管理员密码：\n' + key, title='little颜の班级管理系统 Powered by Python310')
+def loadDatabase():
+    res = readDatabase()
+    if res == "":
+        res = "{}"
+        writeDatabase(res)
+    res = eval(res)
+    return res
 
-admin = res['admin']
-res.pop('admin')
+#设置admin密码并加密
+def setAdmin(res):
+    global admin
 
-while True:
-    op = box.buttonbox('选择你要做什么\n'+ str(res), choices=('计分', '随机', '排行榜', '管理', '退出'), title='little颜の班级管理系统 Powered by Python310')
-    if op == '计分':
-        lst = []
-        for l in res:
-            lst.append(l)
-        tpl = tuple(lst)
-        op = box.buttonbox('选择学生', choices=tpl, title='little颜の班级管理系统 Powered by Python310')
-        mk = box.buttonbox('选择分数', choices=('1','2','3','4','5','-1','-2','-3','-4','-5'), title='little颜の班级管理系统 Powered by Python310')
-        res[op] = res[op] + int(mk)
-        res['admin'] = admin
-        f = open('database.txt', 'w')
-        res = f.write(str(res))
-        f.close()
-        f = open('database.txt', 'r')
-        res = eval(f.read())
-        f.close()
-        res.pop('admin')
-        box.msgbox('加分成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
-    elif op == '管理':
-        f = open('database.txt', 'r')
-        code = eval(f.read())['admin']
-        f.close()
-        key = ''
+    if "admin" not in res:
+        ans = interactenter("你还没有管理员账号，请输入将要使用的密码")
+        code = []
+        for w in str(ans):
+            num = ord(w)
+            code.append(num)
+        admin = code
+        writeDatabase(res)
+        code = admin
+        key = ""
         for w in code:
             key = key + str(chr(w))
-        ans = box.enterbox('请输入管理员密码', title='little颜の班级管理系统 Powered by Python310')
-        if ans == key:
-            while True:
-                op = box.buttonbox('选择你要做什么', choices=('添加', '删除', '清空', '重置', '退出'), title='little颜の班级管理系统 Powered by Python310')
-                if op == '添加':
-                    ans = box.enterbox('请输入学生姓名', title='little颜の班级管理系统 Powered by Python310')
-                    res[ans] = 0
-                    res['admin'] = admin
-                    f = open('database.txt', 'w')
-                    res = f.write(str(res))
-                    f.close()
-                    f = open('database.txt', 'r')
-                    res = eval(f.read())
-                    f.close()
-                    res.pop('admin')
-                    box.msgbox('创建成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
-                elif op == '删除':
-                    ans = box.enterbox('请输入要删除学生姓名\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
-                    if ans not in res:
-                        box.msgbox('没有找到阿巴阿巴', title='little颜の班级管理系统 Powered by Python310')
-                        continue
-                    op = box.ynbox('你真舍得删掉ta吗', title='little颜の班级管理系统 Powered by Python310')
-                    if op == False:
-                        box.msgbox('取消', title='little颜の班级管理系统 Powered by Python310')
-                        continue
-                    res.pop(ans)
-                    res['admin'] = admin
-                    f = open('database.txt', 'w')
-                    res = f.write(str(res))
-                    f.close()
-                    f = open('database.txt', 'r')
-                    res = eval(f.read())
-                    f.close()
-                    res.pop('admin')
-                    box.msgbox('创建成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
-                elif op == '清空':
-                    op = box.ynbox('你真舍得清空吗', title='little颜の班级管理系统 Powered by Python310')
-                    if op == False:
-                        box.msgbox('取消', title='little颜の班级管理系统 Powered by Python310')
-                        continue
-                    res.clear()
-                    res['admin'] = admin
-                    f = open('database.txt', 'w')
-                    res = f.write(str(res))
-                    f.close()
-                    f = open('database.txt', 'r')
-                    res = eval(f.read())
-                    f.close()
-                    res.pop('admin')
-                    box.msgbox('清空成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
-                elif op == '重置':
-                    box.msgbox('删除目录下 database.txt 文件即可（三思而后行）', title='little颜の班级管理系统 Powered by Python310')
-                else:
-                    break
-        else:
-            box.msgbox('密码错误', title='little颜の班级管理系统 Powered by Python310')
-    elif op == '随机':
-        op = int(box.buttonbox('选择人数', choices=('1','2','3','4','5','6','7','8','9','10'), title='little颜の班级管理系统 Powered by Python310'))
-        lst = []
-        for l in res:
-            lst.append(l)
-        if op > len(lst):
-            box.msgbox('选择的人数太多', title='little颜の班级管理系统 Powered by Python310')
-            continue
-        box.msgbox(ran.sample(lst, op), title='little颜の班级管理系统 Powered by Python310')
-    elif op == '排行榜':
-        f = open('database.txt', 'r')
-        res = eval(f.read())
-        f.close()
-        res.pop('admin')
-        box.msgbox(sorted(res.items(),  key=lambda d:d[1], reverse=True), title='little颜の班级管理系统 Powered by Python310')
-        pass
+        interactmsg("请保管好你的管理员密码：" + key)
     else:
-        break
+        admin = res.pop("admin")
+
+
+def main():
+    global admin
+
+    res = loadDatabase()
+    setAdmin(res)
+
+    while True:
+        op = interactbutton("选择你要做什么\n"+ str(res), choices=("计分", "随机", "排行榜", "管理", "退出"))
+        if op == "计分":
+            lst = []
+            for l in res:
+                lst.append(l)
+            tpl = tuple(lst)
+            op = interactbutton("选择学生", choices = tpl)
+            mk = interactbutton("选择分数",
+            choices = ("1","2","3","4","5","-1","-2","-3","-4","-5"))
+            res[op] = res[op] + int(mk)
+            writeDatabase(res)
+            interactmsg("加分成功！\n" + str(res))
+        elif op == "管理":
+            f = open("database.txt", "r")
+            code = eval(f.read())["admin"]
+            f.close()
+            key = ""
+            for w in code:
+                key = key + str(chr(w))
+            ans = interactenter("请输入管理员密码")
+            if ans == key:
+                while True:
+                    op = interactbutton("选择你要做什么", choices=("添加", "删除", "清空", "重置", "返回"))
+                    if op == "添加":
+                        ans = interactenter("请输入学生姓名")
+                        res[ans] = 0
+                        writeDatabase(res)
+                        interactmsg("创建成功！\n"+ str(res))
+                    elif op == "删除":
+                        ans = interactenter("请输入要删除学生姓名\n"+ str(res))
+                        if ans not in res:
+                            interactmsg("没有找到学生 " + ans)
+                            continue
+                        if not interactyn("你真舍得删掉该学生吗"):
+                            interactmsg("操作已取消")
+                            continue
+                        res.pop(ans)
+                        writeDatabase(res)
+                        interactmsg("删除成功！\n"+ str(res))
+                    elif op == "清空":
+                        if not interactyn("你真舍得清空吗"):
+                            interactmsg("操作已取消")
+                            continue
+                        res.clear()
+                        writeDatabase(res)
+                        interactmsg("清空成功！\n"+ str(res))
+                    elif op == "重置":
+                        interactmsg("删除目录下 database.txt 文件即可（三思而后行）")
+                    else:
+                        break
+            else:
+                interactmsg("密码错误")
+        elif op == "随机":
+            op = int(interactbutton("选择人数", choices=("1","2","3","4","5","6","7","8","9","10")))
+            lst = []
+            for l in res:
+                lst.append(l)
+            if op > len(lst):
+                interactmsg("选择的人数太多")
+                continue
+            interactmsg(ran.sample(lst, op))
+        elif op == "排行榜":
+            interactmsg(sorted(res.items(),  key=lambda d:d[1], reverse=True))
+            pass
+        else:
+            break
+
+if __name__ == "__main__":
+    main()
