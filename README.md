@@ -13,24 +13,27 @@
    ```powershell
    pip install easygui
    ```
+   > 如果解压文件夹内有`安装运行库.bat`,且已经配置了Python环境，那么双击该文件即可导入，部分情况下会弹出UAC控制对话框，请允许
 
+   > 如果不导入运行库，程序将会启用命令行模式，在此模式下，可能会非常影响你的使用体验，因此我们建议您安装运行库后再运行
    
 
 4. 输入py，然后空格，把文件托进去enter,如：
 
-   ```powershell
+   ```cmd
    py "C:\Users\lenovo\Desktop\班级管理器\班级管理器.py"
    ```
 
-   > 如果解压文件夹内有`一键运行.bat`，且已经配置了Python环境，那么双击该文件即可运行
+   > 如果解压文件夹内有`一键运行.bat`，且已经配置了Python环境，那么双击该文件即可运行，部分情况下会弹出UAC控制对话框，请允许
 
 5. 就成功运行了
 
 ## 关于
-
+### 版本
+1.2.0.1
 ### 作者
 
-![me](https://gitee.com/Dayanshifu/imagebed/raw/master/img/头像.jpg)
+![me](https://cdn.jsdelivr.net/gh/Dayanshifu/imagebed@main/img/logo.png)
 
 我的个人主页：http://littleyan.cnya.top
 
