@@ -1,37 +1,40 @@
-## Welcome to GitHub Pages
+# little颜の班级管理系统
 
-You can use the [editor on GitHub](https://github.com/Dayanshifu/classes-admin/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+## 如何运行
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+1. 解压文件（带着文件的文件夹一起）
 
-### Markdown
+2. [配置Python环境](http://littleyan.cnya.top/tools/baidu/index.html?配置python环境)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+3. 右击文件夹背景打开windows powershell（有的是windows终端或windows terminal）
 
-```markdown
-Syntax highlighted code block
+4. 导入库
 
-# Header 1
-## Header 2
-### Header 3
+   ```powershell
+   pip install easygui
+   ```
+   > 如果解压文件夹内有`安装运行库.bat`,且已经配置了Python环境，那么双击该文件即可导入，部分情况下会弹出UAC控制对话框，请允许
 
-- Bulleted
-- List
+   > 如果不导入运行库，程序将会启用命令行模式，在此模式下，可能会非常影响你的使用体验，因此我们建议您安装运行库后再运行
+   
 
-1. Numbered
-2. List
+4. 输入py，然后空格，把文件托进去enter,如：
 
-**Bold** and _Italic_ and `Code` text
+   ```cmd
+   py "C:\Users\lenovo\Desktop\班级管理器\班级管理器.py"
+   ```
 
-[Link](url) and ![Image](src)
-```
+   > 如果解压文件夹内有`一键运行.bat`，且已经配置了Python环境，那么双击该文件即可运行，部分情况下会弹出UAC控制对话框，请允许
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+5. 就成功运行了
 
-### Jekyll Themes
+## 关于
+### 版本
+1.2.0.1
+### 作者
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Dayanshifu/classes-admin/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+![me](https://cdn.jsdelivr.net/gh/Dayanshifu/imagebed@main/img/logo.png)
 
-### Support or Contact
+我的个人主页：http://littleyan.cnya.top
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+ 
