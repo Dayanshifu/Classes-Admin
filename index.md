@@ -35,7 +35,7 @@
 
 ![me](https://cdn.jsdelivr.net/gh/Dayanshifu/imagebed@main/img/logo.png)
 
-我的个人主页：https://www.littleyan.ga/
+我的个人主页：https://www.littleyan.tk/
 
 ### 下载地址
-https://bjgl.littleyan.ga
+https://classes-admin.littleyan.tk
