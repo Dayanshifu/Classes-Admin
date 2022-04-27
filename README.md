@@ -38,4 +38,4 @@
 我的个人主页：https://www.littleyan.tk/
 
 ### 下载地址
-https://bjgl.littleyan.tk
+https://classes-admin.littleyan.tk
