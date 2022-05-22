@@ -4,29 +4,34 @@ import time
 import random as ran
 
 cmdmod = 0
+title = 'little颜の班级管理系统 Powered by Python310'
 
 try:
     import easygui as box
 except ImportError:
     cmdmod = 1
-    print('必要的运行库未能导入，开启命令行模式')
+    op = input('必要的运行库未能导入，是否按“Y”现在开始安装 ')
+    if op == 'Y' or op == 'y':
+        os.system('pip install easygui')
+        print('运行库安装成功！请重新运行本程序')
+    print('必要的运行库未能导入，开启命令行模式，要使用完整的程序，请安装运行库')
     sleep = 3
-    for i in range(4):
+    for i in range(3):
         print('please wait for '+ str(sleep)+'s')
         sleep -= 1
         time.sleep(0.8)
 
 if cmdmod != 1:
     if 'database.txt' not in os.listdir():#检测数据库是否存在
-        op = box.ynbox('系统检测到你的文件目录没有 database.txt 文件，是否自动创建？', title='little颜の班级管理系统 Powered by Python310')
+        op = box.ynbox('系统检测到你的文件目录没有 database.txt 文件，是否自动创建？', title=title)
         if op == True:
             f = open('database.txt', 'w')
             res = f.write('{}')
             f.close()
-            box.msgbox('创建成功！请重新运行本程序', title='little颜の班级管理系统 Powered by Python310')
+            box.msgbox('创建成功！请重新运行本程序', title=title)
             quit()
         else:
-            box.msgbox('请自行在当前程序所在目录创建database.txt文件，输入一对英文{}并保存', title='little颜の班级管理系统 Powered by Python310')
+            box.msgbox('请自行在当前程序所在目录创建database.txt文件，输入一对英文{}并保存', title=title)
             quit()
     else:#检测数据库格式并读取
         f = open('database.txt', 'r')
@@ -45,7 +50,12 @@ if cmdmod != 1:
             f.close()
 
     if 'admin' not in res:#设置admin密码并加密
-        ans = box.enterbox('你还没有管理员账号，请输入将要使用的密码', title='little颜の班级管理系统 Powered by Python310')
+        while True:
+            ans = box.passwordbox('你还没有创建管理员密码，请输入将要使用的密码(8位以上)\n账号：admin', title=title)
+            if len(str(ans)) <= 8:
+                box.msgbox('密码不合法，请重新输入', title=title)
+            else:
+                break
         code = []
         for w in str(ans):
             num = ord(w)
@@ -61,22 +71,22 @@ if cmdmod != 1:
         key = ''
         for w in code:
             key = key + str(chr(w))
-        box.msgbox('请保管好你的管理员密码：\n' + key, title='little颜の班级管理系统 Powered by Python310')
+        box.msgbox('请保管好你的管理员密码：\n' + key, title=title)
 
     admin = res['admin']
     res.pop('admin')
 
     while True:
-        op = box.buttonbox('选择你要做什么\n'+ str(res), choices=('计分', '随机', '排行榜', '管理', '退出'), title='little颜の班级管理系统 Powered by Python310')
+        op = box.buttonbox('选择你要做什么\n'+ str(res), choices=('计分', '随机', '排行榜', '管理', '退出'), title=title)
         if op == '计分':
             lst = []
             for l in res:
                 lst.append(l)
             tpl = tuple(lst)
-            op = box.buttonbox('选择学生', choices=tpl, title='little颜の班级管理系统 Powered by Python310')
+            op = box.buttonbox('选择学生', choices=tpl, title=title)
             if op == None:
                 continue
-            mk = box.buttonbox('选择分数', choices=('1','2','3','4','5','-1','-2','-3','-4','-5'), title='little颜の班级管理系统 Powered by Python310')
+            mk = box.buttonbox('选择分数', choices=('1','2','3','4','5','-1','-2','-3','-4','-5'), title=title)
             if mk == None:
                 continue
             res[op] = res[op] + int(mk)
@@ -88,7 +98,7 @@ if cmdmod != 1:
             res = eval(f.read())
             f.close()
             res.pop('admin')
-            box.msgbox('加分成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
+            box.msgbox('加分成功！\n'+ str(res), title=title)
         elif op == '管理':
             f = open('database.txt', 'r')
             code = eval(f.read())['admin']
@@ -96,14 +106,14 @@ if cmdmod != 1:
             key = ''
             for w in code:
                 key = key + str(chr(w))
-            ans = box.enterbox('请输入管理员密码', title='little颜の班级管理系统 Powered by Python310')
+            ans = box.passwordbox('请输入管理员密码', title=title)
             if ans == key:
                 while True:
-                    op = box.buttonbox('选择你要做什么', choices=('添加', '删除', '清空', '重置', '退出'), title='little颜の班级管理系统 Powered by Python310')
+                    op = box.buttonbox('选择你要做什么', choices=('添加', '删除', '清空', '重置', '退出'), title=title)
                     if op == '添加':
-                        ans = box.enterbox('请输入学生姓名', title='little颜の班级管理系统 Powered by Python310')
+                        ans = box.enterbox('请输入学生姓名', title=title)
                         if str(type(ans)) != "<class 'str'>":
-                            box.msgbox('取消', title='little颜の班级管理系统 Powered by Python310')
+                            box.msgbox('取消', title=title)
                             continuenm
                         res[ans] = 0
                         res['admin'] = admin
@@ -114,15 +124,15 @@ if cmdmod != 1:
                         res = eval(f.read())
                         f.close()
                         res.pop('admin')
-                        box.msgbox('创建成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
+                        box.msgbox('创建成功！\n'+ str(res), title=title)
                     elif op == '删除':
-                        ans = box.enterbox('请输入要删除学生姓名\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
+                        ans = box.enterbox('请输入要删除学生姓名\n'+ str(res), title=title)
                         if ans not in res:
-                            box.msgbox('没有找到阿巴阿巴', title='little颜の班级管理系统 Powered by Python310')
+                            box.msgbox('没有找到阿巴阿巴', title=title)
                             continue
-                        op = box.ynbox('你真舍得删掉ta吗', title='little颜の班级管理系统 Powered by Python310')
+                        op = box.ynbox('你真舍得删掉ta吗', title=title)
                         if op != True:
-                            box.msgbox('取消', title='little颜の班级管理系统 Powered by Python310')
+                            box.msgbox('取消', title=title)
                             continue
                         res.pop(ans)
                         res['admin'] = admin
@@ -133,11 +143,11 @@ if cmdmod != 1:
                         res = eval(f.read())
                         f.close()
                         res.pop('admin')
-                        box.msgbox('创建成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
+                        box.msgbox('创建成功！\n'+ str(res), title=title)
                     elif op == '清空':
-                        op = box.ynbox('你真舍得清空吗', title='little颜の班级管理系统 Powered by Python310')
+                        op = box.ynbox('你真舍得清空吗', title=title)
                         if op != True:
-                            box.msgbox('取消', title='little颜の班级管理系统 Powered by Python310')
+                            box.msgbox('取消', title=title)
                             continue
                         res.clear()
                         res['admin'] = admin
@@ -148,28 +158,28 @@ if cmdmod != 1:
                         res = eval(f.read())
                         f.close()
                         res.pop('admin')
-                        box.msgbox('清空成功！\n'+ str(res), title='little颜の班级管理系统 Powered by Python310')
+                        box.msgbox('清空成功！\n'+ str(res), title=title)
                     elif op == '重置':
-                        box.msgbox('删除目录下 database.txt 文件即可（三思而后行）', title='little颜の班级管理系统 Powered by Python310')
+                        box.msgbox('删除目录下 database.txt 文件即可（三思而后行）', title=title)
                     else:
                         break
             else:
-                box.msgbox('密码错误', title='little颜の班级管理系统 Powered by Python310')
+                box.msgbox('密码错误', title=title)
         elif op == '随机':
-            op = int(box.buttonbox('选择人数', choices=('1','2','3','4','5','6','7','8','9','10'), title='little颜の班级管理系统 Powered by Python310'))
+            op = int(box.buttonbox('选择人数', choices=('1','2','3','4','5','6','7','8','9','10'), title=title))
             lst = []
             for l in res:
                 lst.append(l)
             if op > len(lst):
-                box.msgbox('选择的人数太多', title='little颜の班级管理系统 Powered by Python310')
+                box.msgbox('选择的人数太多', title=title)
                 continue
-            box.msgbox(ran.sample(lst, op), title='little颜の班级管理系统 Powered by Python310')
+            box.msgbox(ran.sample(lst, op), title=title)
         elif op == '排行榜':
             f = open('database.txt', 'r')
             res = eval(f.read())
             f.close()
             res.pop('admin')
-            box.msgbox(sorted(res.items(),  key=lambda d:d[1], reverse=True), title='little颜の班级管理系统 Powered by Python310')
+            box.msgbox(sorted(res.items(),  key=lambda d:d[1], reverse=True), title=title)
             pass
         else:
             exit()
@@ -204,7 +214,12 @@ else:
             f.close()
 
     if 'admin' not in res:#设置admin密码并加密
-        ans = input('你还没有管理员账号，请输入将要使用的密码')
+        while True:
+            ans = input('你还没有创建管理员密码，请输入将要使用的密码(8位以上)\n账号：admin')
+            if len(str(ans)) <= 8:
+                print('密码不合法，请重新输入', title=title)
+            else:
+                break
         code = []
         for w in str(ans):
             num = ord(w)
@@ -220,7 +235,7 @@ else:
         key = ''
         for w in code:
             key = key + str(chr(w))
-        print('请保管好你的管理员密码：\n' + key)
+        print('请保管好你的管理员密码：\n' + key, title=title)
 
     admin = res['admin']
     res.pop('admin')
